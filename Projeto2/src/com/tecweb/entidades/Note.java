@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class Note {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id_note;
+	private int id_note;
 	
 	@Column(name = "message_body", nullable = true)
 	private String message_body;
@@ -39,7 +39,7 @@ public class Note {
 	public Note() {
 		
 	}
-	public Note(Long id_note, String message_body, Date creation_date, Date expiry_date, int priority_level, boolean is_active,int id_owner) {
+	public Note(int id_note, String message_body, Date creation_date, Date expiry_date, int priority_level, boolean is_active,int id_owner) {
 		
 		this.id_note = id_note;
 		this.message_body = message_body;
@@ -50,53 +50,53 @@ public class Note {
 		this.id_owner = id_owner;
 	}
 	
-	public Long getId_note() {
+	public int getID() {
 		return id_note;
 	}
-	public void setId_note(Long id_note) {
+	public void setID(int id_note) {
 		this.id_note = id_note;
 	}
 	
-	public String getMessage_body() {
+	public String getMessageBody() {
 		return message_body;
 	}
-	public void setMessage_body(String message_body) {
+	public void setMessageBody(String message_body) {
 		this.message_body = message_body;
 	}
 	
 	
-	public Date getCreation_date() {
+	public Date getCreationDate() {
 		return creation_date;
 	}
-	public void setCreation_date(Date creation_date) {
+	public void setCreationDate(Date creation_date) {
 		this.creation_date = creation_date;
 	}
 	
-	public Date getExpiry_date() {
+	public Date getExpiryDate() {
 		return expiry_date;
 	}
-	public void setExpiry_date(Date expiry_date) {
+	public void setExpiryDate(Date expiry_date) {
 		this.expiry_date = expiry_date;
 	}
 	
-	public int getPriority_level() {
+	public int getPriorityLevel() {
 		return priority_level;
 	}
-	public void setPriority_level(int priority_level) {
+	public void setPriorityLevel(int priority_level) {
 		this.priority_level = priority_level;
 	}
 	
-	public boolean getIs_active() {
+	public boolean getIsActive() {
 		return is_active;
 	}
-	public void setIs_active(boolean is_active) {
+	public void setIsActive(boolean is_active) {
 		this.is_active = is_active;
 	}
 	
-	public int getId_owner() {
+	public int getIdOwner() {
 		return id_owner;
 	}
-	public void setId_owner(int id_owner) {
+	public void setIdOwner(int id_owner) {
 		this.id_owner = id_owner;
 	}
 	

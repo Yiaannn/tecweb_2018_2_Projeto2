@@ -12,19 +12,15 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import mvc.User;
+import com.tecweb.entidades.*;
 
 public class DAO {
 
-	private HttpServletRequest request;
-	private HttpServletResponse response;
 	private Connection connection = null;
 	
 	private final String AUTHCOOKIENAME= "auth";
 	
-	public DAO(HttpServletRequest request, HttpServletResponse response){
-		this.response= response;
-		this.request= request;
+	public DAO(){
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -226,48 +222,25 @@ public class DAO {
 		return ans;
 	}
 	
-	public boolean authenticate(){
-		//procurar e carregar um cookie
-		Cookie c[]=request.getCookies();
-		Cookie auth= null;
-		
-		boolean isValid= false;
-		
-		if (c != null){
-			for(int i=0;i<c.length;i++){
-				
-				if( c[i].getName().equals(AUTHCOOKIENAME) ){
-					auth= c[i];
-					break;
-				}
-			}
-		}
-		
-		//se encontrar, conferir que de fato o cookie é válido
-		if(auth!=null){
-			System.out.println( "Encontrei o meu cookie de validação" );
+	public boolean authenticate(String auth){
 			
-			String[] tokens= auth.getValue().split("-");
-			String login= tokens[0];
-			String hash= tokens[1];
-			
-			/*
-			System.out.println();
-			System.out.println("O split do meu cookie resultou em:");
-			System.out.println(login);
-			System.out.println(hash);
-			System.out.println();
-			*/
-				
-			user = new User();
-			user.setLoginName(login);
-			user.setPassHash(hash);
-			isValid= validateUser(user);
-			
-		}
-		System.out.println( "Não Encontrei o meu cookie de validação" );
+		String[] tokens= auth.split("-");
+		String login= tokens[0];
+		String hash= tokens[1];
 		
-		return isValid;
+		/*
+		System.out.println();
+		System.out.println("O split do meu cookie resultou em:");
+		System.out.println(login);
+		System.out.println(hash);
+		System.out.println();
+		*/
+			
+		User user = new User();
+		user.setLoginName(login);
+		user.setPassHash(hash);
+		
+		return validateUser(user);
 	}
 	
 	public boolean validateUser(User user) {
