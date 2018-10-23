@@ -10,9 +10,12 @@ public class TestController {
  
 	@RequestMapping("/")
 	public String helloWorld() {
- 
 		System.out.println("Testar se consigo capturar o root");
-		
 		return "welcome";
+	}
+	@RequestMapping("adicionaNota")
+	public String adiciona() {
+		return "formNota";
+		
 	}
 }
