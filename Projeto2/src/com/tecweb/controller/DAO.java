@@ -1,5 +1,7 @@
 package com.tecweb.controller;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,17 +10,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.tecweb.entidades.*;
 
 public class DAO {
 
 	private Connection connection = null;
-	
-	private final String AUTHCOOKIENAME= "auth";
 	
 	public DAO(){
 		
@@ -30,9 +26,6 @@ public class DAO {
 		}
 		try {
 			connection= DriverManager.getConnection("jdbc:mysql://localhost/tecwebprojeto1?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "12063cb5d72571662926aa355c97abc8a28c87f3");
-			/*
-			connection= DriverManager.getConnection("jdbc:mysql://localhost/tecwebprojeto1?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "130879");
-			*/
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -226,7 +219,7 @@ public class DAO {
 			
 		String[] tokens= auth.split("-");
 		String login= tokens[0];
-		String hash= tokens[1];
+		String pass= tokens[1];
 		
 		/*
 		System.out.println();
@@ -238,7 +231,7 @@ public class DAO {
 			
 		User user = new User();
 		user.setLoginName(login);
-		user.setPassHash(hash);
+		user.setPassHash(hashFromPass(pass));
 		
 		return validateUser(user);
 	}
@@ -252,7 +245,7 @@ public class DAO {
 		String sql= "";
 		boolean ans= false;
 		try {
-			sql = "SELECT * FROM User WHERE login_name=? AND pass_hash=?"; //TODO confirmar se é assim que uso o prepared statement e se ele já adciona as aspas
+			sql = "SELECT * FROM User WHERE login_name=? AND pass_hash=?";
 			stmt = connection.prepareStatement(sql);
 			stmt.setString(1, user.getLoginName());
 			stmt.setString(2, user.getPassHash());
@@ -273,6 +266,40 @@ public class DAO {
 		
 		System.out.println("Checando a validação do usuário: "+Boolean.toString(ans));
 		return ans;
+	}
+	
+	private String hashFromPass(String pass){
+		String passhash= null;
+		try{
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			byte[] hash = digest.digest(  pass.getBytes(StandardCharsets.UTF_8)  );
+			passhash = bytesToHex(hash);
+			
+		}catch (Exception e){
+			System.out.println("Something went really wrong while hashing");
+			e.printStackTrace();
+		}
+		
+		/*
+		System.out.println("Para garantir, printar o hash:");
+		System.out.println(passhash);
+		*/
+		
+		return passhash;
+	}
+	
+
+	
+	private String bytesToHex(byte[] bytes) { //adaptado de https://stackoverflow.com/a/9855338
+		final char[] hexArray = "0123456789ABCDEF".toCharArray();
+		
+	    char[] hexChars = new char[bytes.length * 2];
+	    for ( int j = 0; j < bytes.length; j++ ) {
+	        int v = bytes[j] & 0xFF;
+	        hexChars[j * 2] = hexArray[v >>> 4];
+	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+	    }
+	    return new String(hexChars);
 	}
 	
 	public void close(){

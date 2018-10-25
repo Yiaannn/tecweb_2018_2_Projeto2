@@ -1,13 +1,16 @@
 package com.tecweb.controller;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,11 +28,33 @@ public class Home {
 	@GetMapping("/signUp")
 	
 	@PostMapping("/signUp")
+	*/
 	
 	@GetMapping("/signIn")
+	public ModelAndView getSignIn(){
+		return new ModelAndView("signIn", HttpStatus.OK);
+	}
 	
 	@PostMapping("/signIn")
-	*/
+	public ModelAndView postSignIn(HttpServletRequest request, HttpServletResponse response){
+		DAO dao= new DAO();
+		String auth;
+		
+		auth= request.getParameter("login");
+		auth+="-";
+		auth+= request.getParameter("pass");
+		
+		if( !dao.authenticate(auth) ){
+			return new ModelAndView("unauthorized", HttpStatus.UNAUTHORIZED);
+			
+		}else{
+			Cookie authCookie= new Cookie("auth", auth);
+			authCookie.setMaxAge(-1);
+			response.addCookie(authCookie);
+			
+			return new ModelAndView("homeLogged", HttpStatus.OK);
+		}
+	}
 	
 	@GetMapping("/signOut")
 	public ModelAndView getSignOut(@CookieValue(value="auth", defaultValue ="empty") String authCookie, HttpServletResponse response) {
@@ -46,7 +71,7 @@ public class Home {
 		
 		
 		//providenciar a página
-		return new ModelAndView("homeUnlogged");
+		return new ModelAndView("homeUnlogged", HttpStatus.OK);
 	}
 	
  
@@ -54,17 +79,23 @@ public class Home {
 	public ModelAndView helloWorld(@CookieValue(value="auth", defaultValue ="empty") String authCookie) {
  
 		//ler o resource do cookie
+		
+		System.out.println("debug");
 		DAO dao= new DAO();
 		if (authCookie.equals("empty") || !dao.authenticate(authCookie) ){
 			//auth inválido
 			
-			return new ModelAndView("homeUnlogged");
+			return new ModelAndView("homeUnlogged", HttpStatus.OK);
 		}
 		
 		//auth válido
 		
-		return new ModelAndView("homeLogged");
+		return new ModelAndView("homeLogged", HttpStatus.OK);
 	}
 	
-	//@PostMapping("/home")
+	
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ModelAndView handleResourceNotFoundException() {
+        return new ModelAndView("notFound" , HttpStatus.NOT_FOUND);
+    }
 }
