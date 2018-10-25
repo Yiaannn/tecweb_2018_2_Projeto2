@@ -9,8 +9,8 @@
 </head>
 <body>
 
-<form id="notes" action='/Projeto1/Notes' method='get'></form>
-<form id="signout" action='/Projeto1/SignOut' method='post'></form>
+<form id="notes" action='Notes' method='get'></form>
+<form id="signout" action='signOut' method='post'></form>
 
 <p>${param.message}</p>
 

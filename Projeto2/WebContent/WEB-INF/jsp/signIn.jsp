@@ -9,18 +9,17 @@
 </head>
 <body>
 
-<form id="voltar" action='/Projeto1/' method='get'></form>
+<form id="voltar" action='/' method='get'></form>
 
 <p>${param.message}</p>
-
 <div class="boxwrapper">
 	<div class="centerbox">
 		<div class="centerboxchild">
-			<h1>Inscrever-se</h1>
+			<h1>Acessar Perfil</h1>
 		</div>
 		
 		<div class="centerboxchild">
-			<form id="signup" action='/Projeto1/SignUp' method='post' >
+			<form id="signup" action='signIn' method='post' >
 				<input type='text' name='login' placeholder='login'><br>
 				<input type='password' name='pass' placeholder='senha'><br>
 			</form>

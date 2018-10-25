@@ -9,8 +9,8 @@
 </head>
 <body>
 
-<form id="signup" action='/Projeto1/SignUp' method='get'></form>
-<form id="signin" action='/Projeto1/SignIn' method='get'></form>
+<form id="signup" action='signUp' method='get'></form>
+<form id="signin" action='signIn' method='get'></form>
 
 <p>${param.message}</p>
 
