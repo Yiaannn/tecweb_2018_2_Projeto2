@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,9 +41,7 @@ public class Home {
 		DAO dao= new DAO();
 		String auth;
 		
-		auth= request.getParameter("login");
-		auth+="-";
-		auth+= request.getParameter("pass");
+		auth= request.getParameter("login") + "-" + request.getParameter("pass");
 		
 		if( !dao.authenticate(auth) ){
 			return new ModelAndView("unauthorized", HttpStatus.UNAUTHORIZED);
@@ -92,10 +91,4 @@ public class Home {
 		
 		return new ModelAndView("homeLogged", HttpStatus.OK);
 	}
-	
-	
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ModelAndView handleResourceNotFoundException() {
-        return new ModelAndView("notFound" , HttpStatus.NOT_FOUND);
-    }
 }

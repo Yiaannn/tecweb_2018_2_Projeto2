@@ -9,20 +9,13 @@
 </head>
 <body>
 
-<form id="notes" action='Notes' method='get'></form>
-<form id="signout" action='signOut' method='get'></form>
-
-<p>${param.message}</p>
-
 <div class="boxwrapper">
 	<div class="centerbox">
 		<div class="centerboxchild">
-			<h1>Projeto Notinhas</h1>
+			<h1>404 - Not Found</h1>
 		</div>
-		
 		<div class="centerboxchild">
-			<button type="submit" form='notes'>Acessar Notas</button>
-			<button type="submit" form="signout">Sair</button>
+			<p>O recurso especificado não foi encontrado pelo servidor</p>
 		</div>
 	</div>
 </div>
