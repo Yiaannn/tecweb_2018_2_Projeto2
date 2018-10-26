@@ -1,5 +1,7 @@
 package com.tecweb.controller;
 
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tecweb.entidades.User;
+import com.tecweb.entidades.Note;
 
 //consultar para quem sabe conseguir puxar verbos http
 //https://stackoverflow.com/questions/9521690/how-to-handle-http-options-with-spring-mvc
@@ -24,6 +27,30 @@ public class Home {
 		
 	}
 	*/
+	
+	@GetMapping("/note")
+	public ModelAndView getNote(@CookieValue(value="auth", defaultValue ="empty") String authCookie){
+		//exibir a lista de notas
+		
+		//ler o resource do cookie
+		
+		DAO dao= new DAO();
+		User user= dao.authenticate(authCookie);
+		if (authCookie.equals("empty") || user==null ){
+			//auth inválido
+			
+			return new ModelAndView("unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+		
+		//auth válido
+		//montar o recurso que representa a lista de notes
+		
+		List<Note> notes= dao.getActiveNoteList( user );
+		
+		ModelAndView mav= new ModelAndView("noteList", HttpStatus.OK);
+		mav.addObject("notes", notes);
+		return mav;
+	}
 	
 	@GetMapping("/signUp")
 	public ModelAndView getSignUp(){
@@ -69,7 +96,8 @@ public class Home {
 		
 		auth= request.getParameter("login") + "-" + request.getParameter("pass");
 		
-		if( !dao.authenticate(auth) ){
+		User user= dao.authenticate(auth);
+		if( user == null ){
 			return new ModelAndView("unauthorized", HttpStatus.UNAUTHORIZED);
 			
 		}else{
@@ -105,9 +133,9 @@ public class Home {
  
 		//ler o resource do cookie
 		
-		System.out.println("debug");
 		DAO dao= new DAO();
-		if (authCookie.equals("empty") || !dao.authenticate(authCookie) ){
+		User user= dao.authenticate(authCookie);
+		if (authCookie.equals("empty") || user==null ){
 			//auth inválido
 			
 			return new ModelAndView("homeUnlogged", HttpStatus.OK);

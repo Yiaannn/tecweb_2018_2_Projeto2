@@ -30,7 +30,7 @@
 					
 				</div>
 				<div class="centerboxchild">
-					<button type="submit" form="postNote" ">Confirmar</button>
+					<button type="submit" form="postNote">Confirmar</button>
 				</div>
 			</details>
 		</div>
@@ -38,6 +38,9 @@
 
 	<c:forEach items="${notes}" var="note">
 		<div class="centerbox">
+			<div class="centerboxchild">
+				<img src="http://identicon-1132.appspot.com/${note.getID()}salt?s=14&p=6&f=png" alt="Ícone identificador da nota">
+			</div>
 			<div class="centerboxchild">
 				<h1>Prioridade: ${note.getDecoratedPriorityLevel()}</h1>
 			</div>

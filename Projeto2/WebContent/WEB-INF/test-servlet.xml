@@ -14,7 +14,7 @@
 	<mvc:annotation-driven />
 	<context:component-scan
 		base-package="com.tecweb.controller" />
-		
+	
 	<mvc:default-servlet-handler />
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">

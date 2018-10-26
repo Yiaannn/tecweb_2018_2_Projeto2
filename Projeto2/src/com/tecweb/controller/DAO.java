@@ -215,9 +215,13 @@ public class DAO {
 		return ans;
 	}
 	
-	public boolean authenticate(String auth){
+	public User authenticate(String auth){
 			
 		String[] tokens= auth.split("-");
+		if (tokens.length!=2){
+			//poderia considerar devolver um malformed nesta condição
+			return null;
+		}
 		String login= tokens[0];
 		String pass= tokens[1];
 		
@@ -233,7 +237,10 @@ public class DAO {
 		user.setLoginName(login);
 		user.setPassHash(hashFromPass(pass));
 		
-		return validateUser(user);
+		if ( validateUser(user) ){
+			return user;
+		}
+		return null;
 	}
 	
 	public boolean validateUser(User user) {

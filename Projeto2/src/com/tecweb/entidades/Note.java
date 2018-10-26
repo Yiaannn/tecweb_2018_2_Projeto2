@@ -1,6 +1,8 @@
 package com.tecweb.entidades;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -100,5 +102,28 @@ public class Note {
 		this.id_owner = id_owner;
 	}
 	
+	public String getDecoratedPriorityLevel(){
+		int i=0;
+		String icon="❗";
+		String ans= icon;
+		while(i!= this.priority_level){
+			
+			ans+=icon;
+			i+=1;
+		}
+		
+		return ans;
+	}
 	
+	public String getDecoratedExpiryDate(){
+		String ans="Segurar ";
+		if (expiry_date == null){
+			ans+="Indefinidamente";
+		}else{
+			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			ans+="até " + df.format(expiry_date);
+		}
+		
+		return ans;
+	}
 }
