@@ -14,10 +14,11 @@ INSERT INTO Note (message_body, creation_date, priority_level, is_active, id_own
         true,
 		1);
         
-INSERT INTO Note (message_body, creation_date, priority_level, is_active, id_owner)
+INSERT INTO Note (message_body, creation_date, expiry_date, priority_level, is_active, id_owner)
 	values(
 		'Segunda Note teste',
 		'2002-02-02',
+		'2018-11-01',
         1,
         true,
 		1);

@@ -1,5 +1,8 @@
 package com.tecweb.controller;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -14,6 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tecweb.entidades.User;
+
+import tk.plogitech.darksky.api.jackson.DarkSkyJacksonClient;
+import tk.plogitech.darksky.forecast.APIKey;
+import tk.plogitech.darksky.forecast.DarkSkyClient;
+import tk.plogitech.darksky.forecast.ForecastRequest;
+import tk.plogitech.darksky.forecast.ForecastRequestBuilder;
+import tk.plogitech.darksky.forecast.GeoCoordinates;
+import tk.plogitech.darksky.forecast.model.Forecast;
+import tk.plogitech.darksky.forecast.model.Latitude;
+import tk.plogitech.darksky.forecast.model.Longitude;
+
+import com.google.gson.Gson;
 import com.tecweb.entidades.Note;
 
 //consultar para quem sabe conseguir puxar verbos http
@@ -115,7 +130,7 @@ public class Home {
 		//Posso fazer a deleção no próprio get
 		
 		//limpar o cookie
-		
+
 		if (authCookie.equals("empty")){
 			Cookie auth= new Cookie("auth", authCookie);
 			auth.setMaxAge(0); //Se desfazer do cookie agora
@@ -130,7 +145,33 @@ public class Home {
  
 	@GetMapping("/home")
 	public ModelAndView helloWorld(@CookieValue(value="auth", defaultValue ="empty") String authCookie) {
- 
+		//pegar a previsão do API
+		Forecast forecast= null;
+		
+		ForecastRequest request = new ForecastRequestBuilder()
+		        .key(new APIKey("5742709c18aba85136a1c17a34366ad1"))
+		        .time(Instant.now())
+		        .units(ForecastRequestBuilder.Units.si)
+		        //.exdclude(ForecastRequestBuilder.Block.minutely)
+		        //.extendHourly()
+		        .location(new GeoCoordinates(new Longitude(-46.67643049021903), new Latitude(-23.5987249))).build(); //latitude e longitude do Insper
+		
+		DarkSkyJacksonClient client = new DarkSkyJacksonClient();
+		
+		try {
+			forecast = client.forecast(request);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		//pegar o que a gente quer do forecast
+		String previsao= "Temperatura de hoje: Difícil dizer";
+		
+		if(forecast != null) {
+			previsao= "Temperatura de hoje: "+ forecast.getCurrently().getTemperature() +"°C";
+		}
+		System.out.println(previsao);
+		
 		//ler o resource do cookie
 		
 		DAO dao= new DAO();
@@ -138,11 +179,15 @@ public class Home {
 		if (authCookie.equals("empty") || user==null ){
 			//auth inválido
 			
-			return new ModelAndView("homeUnlogged", HttpStatus.OK);
+			ModelAndView mav= new ModelAndView("homeUnlogged", HttpStatus.OK);
+			mav.addObject("temperatura", previsao);
+			return mav;
 		}
 		
 		//auth válido
 		
-		return new ModelAndView("homeLogged", HttpStatus.OK);
+		ModelAndView mav= new ModelAndView("homeLogged", HttpStatus.OK);
+		mav.addObject("temperatura", previsao);
+		return mav;
 	}
 }

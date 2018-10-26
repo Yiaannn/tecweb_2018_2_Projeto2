@@ -25,6 +25,16 @@
 			<button type="submit" form="signout">Sair</button>
 		</div>
 	</div>
+	
+	<div class="centerbox">
+		<div class="centerboxchild">
+			<h1>Previsão do Dia</h1>
+		</div>
+		
+		<div class="centerboxchild">
+			<p>${temperatura}</p>
+		</div>
+	</div>
 </div>
 
 </body>
