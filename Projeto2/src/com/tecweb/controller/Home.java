@@ -1,5 +1,7 @@
 package com.tecweb.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -8,12 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tecweb.entidades.User;
+
 import com.tecweb.entidades.Note;
 
 //consultar para quem sabe conseguir puxar verbos http
@@ -27,6 +31,63 @@ public class Home {
 		
 	}
 	*/
+	
+	/*
+	@DeleteMapping("/note/{id}")
+	Posso fazer um delete por id depois
+	*/
+	
+	@PostMapping("/note")
+	public ModelAndView postNote(@CookieValue(value="auth", defaultValue ="empty") String authCookie, HttpServletRequest request){
+		//autenticar
+		
+		DAO dao= new DAO();
+		User user= dao.authenticate(authCookie);
+		if (authCookie.equals("empty") || user==null ){
+			//auth inválido
+			
+			return new ModelAndView("unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+		
+		//auth válido
+		
+		String methodcheck= request.getParameter("_method");
+		
+		ModelAndView mav= null;
+		if(methodcheck.equals("DELETE")){
+		
+			String target= request.getParameter("target");
+			
+			dao.disableNote(Integer.parseInt(target));
+			
+			//deploy
+			mav= new ModelAndView("redirect:note", HttpStatus.OK);
+		}else if( methodcheck.equals("POST") || methodcheck == null ){
+			
+			String messageBody= request.getParameter( "messageBody" );
+			int priorityLevel= Integer.parseInt( request.getParameter("priority") );
+			java.sql.Date creationDate = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+			
+			java.sql.Date expiryDate= null;
+			try{
+				String tmp= request.getParameter("expiryDate");
+				expiryDate= new java.sql.Date(   (new SimpleDateFormat("yyyy-MM-dd").parse(tmp)).getTime()   );
+			}catch(Exception e){
+				System.out.println("expiry date inválida, tratando");
+			}
+			
+			Note note= new Note();
+			note.setMessageBody(messageBody);
+			note.setPriorityLevel(priorityLevel);
+			note.setCreationDate(creationDate);
+			note.setExpiryDate( expiryDate );
+			
+			dao.addNote(note, user);
+			
+			mav= new ModelAndView("redirect:note", HttpStatus.OK);
+		}
+		return mav;
+	}
 	
 	@GetMapping("/note")
 	public ModelAndView getNote(@CookieValue(value="auth", defaultValue ="empty") String authCookie){

@@ -17,7 +17,7 @@
 			<details>
 				<summary>Nova Nota</summary>
 				<div class="centerboxchild">
-				<form id="postNote" action='/Projeto1/Notes' method='post' >
+				<form id="postNote" action='note' method='post' >
 					<input type="hidden" name="_method" value="POST">
 					<textarea name="messageBody" placeholder='Corpo da Mensagem' cols="40" rows="5"></textarea>
 					<h2>Prioridade</h2>
@@ -54,7 +54,7 @@
 				<p>${note.getDecoratedExpiryDate()}</p>
 			</div>
 			<div class="centerboxchild">
-				<form id="deleteNote" action='/Projeto1/Notes' method='post'>
+				<form id="deleteNote" action='note' method='post'>
 					<input type="hidden" name="_method" value="DELETE">
 				</form>
 				<button type="submit" form="deleteNote" name="target" value="${note.getID()}">Apagar</button>
@@ -64,7 +64,7 @@
 	
 	<div class="centerbox">
 		<div class="centerboxchild">
-			<form id="voltar" action='/Projeto1/' method='get'></form>
+			<form id="voltar" action='home' method='get'></form>
 			<button type="submit" form="voltar">Voltar</button>
 		</div>
 	</div>
