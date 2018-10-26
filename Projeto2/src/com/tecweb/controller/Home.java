@@ -5,15 +5,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.tecweb.entidades.User;
 
 //consultar para quem sabe conseguir puxar verbos http
 //https://stackoverflow.com/questions/9521690/how-to-handle-http-options-with-spring-mvc
@@ -21,15 +19,43 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 public class Home {
 	
+	/*
 	private void  authMacro(DAO dao, String authCookie){
 		
 	}
+	*/
 	
-	/*
 	@GetMapping("/signUp")
+	public ModelAndView getSignUp(){
+		return new ModelAndView("signUp", HttpStatus.OK);
+	}
 	
 	@PostMapping("/signUp")
-	*/
+	public ModelAndView postSignUp(HttpServletRequest request, HttpServletResponse response){
+		DAO dao= new DAO();
+		User user= new User();
+		
+		user.setLoginName(request.getParameter("login"));
+		user.setPassHash(dao.hashFromPass( request.getParameter("pass") ));
+		user.setDisplayName(user.getLoginName());
+		
+		//Checar se o par login/pass é válido, devolver 409-Conflict se não
+		
+		if(dao.checkIfLoginIsAvailable(user)){
+			
+			dao.addUser(user);
+			
+			String auth= request.getParameter("login")+"-"+request.getParameter("pass");
+			Cookie authCookie= new Cookie("auth", auth);
+			authCookie.setMaxAge(-1);
+			response.addCookie(authCookie);
+			
+			return new ModelAndView("homeLogged", HttpStatus.OK);
+		}else{
+			
+			return new ModelAndView("conflict", HttpStatus.CONFLICT);
+		}
+	}
 	
 	@GetMapping("/signIn")
 	public ModelAndView getSignIn(){

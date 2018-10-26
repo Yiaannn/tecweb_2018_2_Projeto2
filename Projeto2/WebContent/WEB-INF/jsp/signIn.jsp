@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<form id="voltar" action='/' method='get'></form>
+<form id="voltar" action='home' method='get'></form>
 
 <p>${param.message}</p>
 <div class="boxwrapper">

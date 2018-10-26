@@ -268,7 +268,7 @@ public class DAO {
 		return ans;
 	}
 	
-	private String hashFromPass(String pass){
+	public String hashFromPass(String pass){
 		String passhash= null;
 		try{
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");
