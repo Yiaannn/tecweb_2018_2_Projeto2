@@ -151,7 +151,7 @@ public class Home {
 			authCookie.setMaxAge(-1);
 			response.addCookie(authCookie);
 			
-			return new ModelAndView("homeLogged", HttpStatus.OK);
+			return new ModelAndView("redirect:home", HttpStatus.OK);
 		}else{
 			
 			return new ModelAndView("conflict", HttpStatus.CONFLICT);
@@ -179,7 +179,7 @@ public class Home {
 			authCookie.setMaxAge(-1);
 			response.addCookie(authCookie);
 			
-			return new ModelAndView("homeLogged", HttpStatus.OK);
+			return new ModelAndView("redirect:home", HttpStatus.OK);
 		}
 	}
 	
@@ -190,15 +190,13 @@ public class Home {
 		
 		//limpar o cookie
 
-		if (authCookie.equals("empty")){
-			Cookie auth= new Cookie("auth", authCookie);
-			auth.setMaxAge(0); //Se desfazer do cookie agora
-			response.addCookie(auth);
-		}
+		Cookie auth= new Cookie("auth", null);
+		auth.setMaxAge(0); //Se desfazer do cookie agora
+		response.addCookie(auth);
 		
 		
 		//providenciar a página
-		return new ModelAndView("homeUnlogged", HttpStatus.OK);
+		return new ModelAndView("redirect:home", HttpStatus.OK);
 	}
 	
  
